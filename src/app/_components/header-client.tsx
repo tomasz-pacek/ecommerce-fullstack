@@ -1,6 +1,8 @@
 "use client";
 
+import ActionButton from "@/components/shared/action-button";
 import gsap from "gsap";
+import { ArrowRight } from "lucide-react";
 import { Route } from "next";
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
@@ -46,7 +48,7 @@ export default function HeaderClient() {
   return (
     <nav
       ref={navRef}
-      className="flex w-4/5 items-center justify-center rounded-lg border border-gray-300 bg-white py-5"
+      className="flex w-4/5 items-center justify-around rounded-lg border border-black/10 bg-transparent py-5 backdrop-blur-xl dark:border-white/8"
     >
       <ul>
         {NAV_LINKS.map((link) => (
@@ -55,6 +57,13 @@ export default function HeaderClient() {
           </li>
         ))}
       </ul>
+      <ActionButton className="group text-foreground relative overflow-hidden rounded-4xl bg-transparent px-8 shadow-[inset_0_0_0_1px_currentColor] hover:bg-transparent">
+        <span className="bg-foreground absolute -inset-px z-0 origin-right scale-x-0 rounded-4xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
+
+        <span className="group-hover:text-background relative z-10 flex items-center gap-2 transition-colors duration-300">
+          Login <ArrowRight />
+        </span>
+      </ActionButton>
     </nav>
   );
 }

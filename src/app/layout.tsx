@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         enableSystem
         disableTransitionOnChange
       >
-        <body className="flex flex-col min-h-full">{children}</body>
+        <body className="flex min-h-full flex-col">{children}</body>
       </ThemeProvider>
     </html>
   );
