@@ -14,6 +14,14 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
   },
+  user: {
+    additionalFields: {
+      lastName: {
+        type: "string",
+        required: true,
+      },
+    },
+  },
 
   plugins: [nextCookies(), lastLoginMethod()],
 });

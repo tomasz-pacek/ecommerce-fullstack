@@ -1,13 +1,13 @@
 "use client";
 
-import ActionButton from "@/components/shared/action-button";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight } from "lucide-react";
 import { Route } from "next";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useLayoutEffect, useRef } from "react";
+import LoginDropdown from "./login-dropdown";
+import { Session } from "@/types/auth";
+import ThemeToggle from "./theme-toggle";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,10 +18,13 @@ const NAV_LINKS: { label: string; href: Route }[] = [
 const ANIMATION_KEY = "navAnimationPlayed";
 const SCROLL_THRESHOLD = 80;
 
-export default function HeaderClient() {
+type Props = {
+  session: Session;
+};
+
+export default function HeaderClient({ session }: Props) {
   const headerRef = useRef<HTMLElement | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
-  const router = useRouter();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -101,16 +104,10 @@ export default function HeaderClient() {
             </li>
           ))}
         </ul>
-        <ActionButton
-          onClick={() => router.push("/login")}
-          className="group text-foreground relative overflow-hidden rounded-4xl bg-transparent px-8 shadow-[inset_0_0_0_1px_currentColor] hover:bg-transparent"
-        >
-          <span className="bg-foreground absolute -inset-px z-0 origin-right scale-x-0 rounded-4xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
-
-          <span className="group-hover:text-background relative z-10 flex items-center gap-2 transition-colors duration-300">
-            Login <ArrowRight />
-          </span>
-        </ActionButton>
+        <div className="flex items-center justify-center gap-2">
+          <ThemeToggle />
+          <LoginDropdown session={session} />
+        </div>
       </nav>
     </header>
   );
