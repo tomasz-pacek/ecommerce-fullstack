@@ -23,5 +23,5 @@ export const auth = betterAuth({
     },
   },
 
-  plugins: [nextCookies(), lastLoginMethod()],
+  plugins: [lastLoginMethod(), nextCookies()],
 });
