@@ -28,6 +28,19 @@ export default function HeaderClient({ session }: Props) {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      const isScrolled = window.scrollY > SCROLL_THRESHOLD;
+
+      if (isScrolled) {
+        gsap.set(headerRef.current, { top: 0 });
+        gsap.set(navRef.current, {
+          width: "100%",
+          borderRadius: 0,
+          borderTopWidth: 0,
+          borderLeftWidth: 0,
+          borderRightWidth: 0,
+        });
+      }
+
       const alreadyPlayed = sessionStorage.getItem(ANIMATION_KEY) === "true";
 
       if (alreadyPlayed) {

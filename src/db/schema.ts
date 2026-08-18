@@ -1,5 +1,32 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  index,
+  pgEnum,
+  varchar,
+  uuid,
+  integer,
+  uniqueIndex,
+  numeric,
+} from "drizzle-orm/pg-core";
+
+export const brandEnum = pgEnum("laptop_brand", [
+  "apple",
+  "dell",
+  "lenovo",
+  "asus",
+  "hp",
+  "msi",
+  "acer",
+]);
+
+export const cpuBrandEnum = pgEnum("cpu_brand", ["intel", "amd", "apple"]);
+export const gpuTypeEnum = pgEnum("gpu_type", ["integrated", "dedicated"]);
+export const storageTypeEnum = pgEnum("storage_type", ["ssd", "hdd", "emmc"]);
+export const osEnum = pgEnum("os", ["windows", "macos", "linux", "chrome_os"]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -73,6 +100,68 @@ export const verification = pgTable(
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
+
+export const laptops = pgTable(
+  "laptops",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    sku: varchar("sku", { length: 40 }).notNull(),
+    slug: varchar("slug", { length: 200 }).notNull(),
+    brand: brandEnum("brand").notNull(),
+    model: varchar("model", { length: 120 }).notNull(),
+    title: varchar("title", { length: 200 }).notNull(),
+    description: text("description"),
+    priceCents: integer("price_cents").notNull(),
+    compareAtPriceCents: integer("compare_at_price_cents"),
+    currency: varchar("currency", { length: 3 }).default("PLN").notNull(),
+    quantity: integer("quantity").default(0).notNull(),
+
+    ramGb: integer("ram_gb").notNull(),
+    storageGb: integer("storage_gb").notNull(),
+    screenInches: numeric("screen_inches", { precision: 3, scale: 1 }),
+    weightGrams: integer("weight_grams"),
+    batteryWh: integer("battery_wh"),
+    refreshRateHz: integer("refresh_rate_hz"),
+
+    cpuBrand: cpuBrandEnum("cpu_brand").notNull(),
+    cpuModel: varchar("cpu_model", { length: 60 }),
+    gpuType: gpuTypeEnum("gpu_type").notNull(),
+    gpuModel: varchar("gpu_model", { length: 60 }),
+    storageType: storageTypeEnum("storage_type").notNull(),
+    os: osEnum("os").notNull(),
+
+    touchscreen: boolean("touchscreen").default(false).notNull(),
+    backlitKeyboard: boolean("backlit_keyboard").default(false).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("laptops_sku_idx").on(t.sku),
+    uniqueIndex("laptops_slug_idx").on(t.slug),
+    index("laptops_brand_idx").on(t.brand),
+    index("laptops_price_idx").on(t.priceCents),
+    index("laptops_ram_idx").on(t.ramGb),
+    index("laptops_quantity_idx").on(t.quantity),
+  ],
+);
+
+// export const laptopImages = pgTable(
+//   "laptop_images",
+//   {
+//     id: uuid("id").defaultRandom().primaryKey(),
+//     laptopId: uuid("laptop_id")
+//       .notNull()
+//       .references(() => laptops.id, { onDelete: "cascade" }),
+//     url: varchar("url", { length: 500 }).notNull(),
+//     alt: varchar("alt", { length: 200 }),
+//     position: integer("position").default(0).notNull(), // kolejność wyświetlania
+//     isPrimary: boolean("is_primary").default(false).notNull(),
+//     createdAt: timestamp("created_at").defaultNow().notNull(),
+//   },
+//   (t) => [index("laptop_images_laptop_id_idx").on(t.laptopId)],
+// );
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
