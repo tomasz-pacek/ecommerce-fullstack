@@ -28,6 +28,18 @@ export const gpuTypeEnum = pgEnum("gpu_type", ["integrated", "dedicated"]);
 export const storageTypeEnum = pgEnum("storage_type", ["ssd", "hdd", "emmc"]);
 export const osEnum = pgEnum("os", ["windows", "macos", "linux", "chrome_os"]);
 
+export const cpuBrands = cpuBrandEnum.enumValues;
+export type CpuBrandsType = (typeof cpuBrands)[number];
+
+export const gpuTypes = gpuTypeEnum.enumValues;
+export type GpuType = (typeof gpuTypes)[number];
+
+export const storageTypes = storageTypeEnum.enumValues;
+export type StorageType = (typeof storageTypes)[number];
+
+export const operatingSystems = osEnum.enumValues;
+export type OperatingSystem = (typeof operatingSystems)[number];
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
