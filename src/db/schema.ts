@@ -38,7 +38,7 @@ export const storageTypes = storageTypeEnum.enumValues;
 export type StorageType = (typeof storageTypes)[number];
 
 export const operatingSystems = osEnum.enumValues;
-export type OperatingSystem = (typeof operatingSystems)[number];
+export type OperatingSystemType = (typeof operatingSystems)[number];
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
