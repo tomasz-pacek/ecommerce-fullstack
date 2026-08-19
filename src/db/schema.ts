@@ -159,21 +159,21 @@ export const laptops = pgTable(
   ],
 );
 
-// export const laptopImages = pgTable(
-//   "laptop_images",
-//   {
-//     id: uuid("id").defaultRandom().primaryKey(),
-//     laptopId: uuid("laptop_id")
-//       .notNull()
-//       .references(() => laptops.id, { onDelete: "cascade" }),
-//     url: varchar("url", { length: 500 }).notNull(),
-//     alt: varchar("alt", { length: 200 }),
-//     position: integer("position").default(0).notNull(), // kolejność wyświetlania
-//     isPrimary: boolean("is_primary").default(false).notNull(),
-//     createdAt: timestamp("created_at").defaultNow().notNull(),
-//   },
-//   (t) => [index("laptop_images_laptop_id_idx").on(t.laptopId)],
-// );
+export const laptopImages = pgTable(
+  "laptop_images",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    laptopId: uuid("laptop_id")
+      .notNull()
+      .references(() => laptops.id, { onDelete: "cascade" }),
+    publicId: varchar("public_id", { length: 500 }).notNull(),
+    alt: varchar("alt", { length: 200 }),
+    position: integer("position").default(0).notNull(), // kolejność wyświetlania
+    isPrimary: boolean("is_primary").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [index("laptop_images_laptop_id_idx").on(t.laptopId)],
+);
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
@@ -191,5 +191,16 @@ export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
     references: [user.id],
+  }),
+}));
+
+export const laptopRelations = relations(laptops, ({ many }) => ({
+  images: many(laptopImages),
+}));
+
+export const laptopImageRelations = relations(laptopImages, ({ one }) => ({
+  laptop: one(laptops, {
+    fields: [laptopImages.laptopId],
+    references: [laptops.id],
   }),
 }));
