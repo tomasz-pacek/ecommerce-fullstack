@@ -2,6 +2,7 @@ import { GridPattern } from "@/components/ui/grid-pattern";
 import HeroSection from "./hero-section";
 import { Separator } from "@/components/ui/separator";
 import CtaBanner from "./cta-banner";
+import LogosSection from "./logos-section";
 
 export default function HomeContent() {
   return (
@@ -13,6 +14,7 @@ export default function HomeContent() {
       <HeroSection />
       <Separator className="my-12" />
       <div className="relative container mx-auto px-4">
+        <LogosSection />
         <CtaBanner />
       </div>
       <div className="min-h-screen">xd</div>
