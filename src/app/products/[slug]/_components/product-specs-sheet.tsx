@@ -2,6 +2,8 @@
 
 import Reveal from "@/components/shared/reveal";
 import { Laptop } from "@/db/schema";
+import { formatGramsToKilos } from "@/lib/utils/format-grams-to-kilos";
+import { formatSpecValue } from "@/lib/utils/format-spec-value";
 
 type Props = {
   laptop: Laptop;
@@ -15,7 +17,7 @@ type SpecItemProps = {
 export default function ProductSpecsSheet({ laptop }: Props) {
   return (
     <Reveal stagger>
-      <h2 data-reveal-item className="mt-12 mb-4 text-3xl font-bold">
+      <h2 data-reveal-item className="mb-4 text-3xl font-bold">
         Specifications
       </h2>
       <div className="grid gap-x-10 gap-y-px sm:grid-cols-2">
@@ -27,8 +29,11 @@ export default function ProductSpecsSheet({ laptop }: Props) {
         <SpecItem label="Storage" value={`${laptop.storageGb}GB`} />
         <SpecItem label="Display" value={`${laptop.screenInches}"`} />
         <SpecItem label="Refresh Rate" value={`${laptop.refreshRateHz}Hz`} />
-        <SpecItem label="Weight" value={laptop.weightGrams} />
-        <SpecItem label="Batterry" value={laptop.batteryWh} />
+        <SpecItem
+          label="Weight"
+          value={`${formatGramsToKilos(laptop.weightGrams)}kg`}
+        />
+        <SpecItem label="Battery" value={`${laptop.batteryWh}Wh`} />
         <SpecItem label="Operating System" value={laptop.os} />
         <SpecItem label="Touchscreen" value={laptop.touchscreen} />
         <SpecItem label="Backlit Keyboard" value={laptop.backlitKeyboard} />
@@ -37,17 +42,6 @@ export default function ProductSpecsSheet({ laptop }: Props) {
     </Reveal>
   );
 }
-
-const formatSpecValue = (value: string | boolean | number | null) => {
-  if (value === null) return "-";
-  if (typeof value === "boolean") {
-    return value ? "Yes" : "No";
-  }
-  if (typeof value === "number") {
-    return String(value);
-  }
-  return value;
-};
 
 const SpecItem = ({ label, value }: SpecItemProps) => {
   return (

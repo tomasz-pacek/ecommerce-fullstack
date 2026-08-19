@@ -8,13 +8,9 @@ type Props = {
 
 export default async function ProductPage({ params }: Props) {
   return (
-    <>
-      <Suspense>
-        <HeaderServer />
-      </Suspense>
-      <Suspense fallback={<div>Loading</div>}>
-        <ProductContent params={params} />
-      </Suspense>
-    </>
+    <Suspense fallback={<div>Loading</div>}>
+      <HeaderServer />
+      <ProductContent params={params} />
+    </Suspense>
   );
 }

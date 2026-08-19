@@ -6,6 +6,8 @@ import { getLaptopBySlug } from "@/db/queries";
 import { Route } from "next";
 import { notFound } from "next/navigation";
 import ProductSpecsSheet from "./product-specs-sheet";
+import ProductDetails from "./product-details";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -26,6 +28,8 @@ export default async function ProductContent({ params }: Props) {
       <Reveal>
         <Breadcrumbs items={breadcrumbItems} />
       </Reveal>
+      <ProductDetails laptop={laptop} />
+      <Separator className="my-12" />
       <ProductSpecsSheet laptop={laptop} />
     </div>
   );
