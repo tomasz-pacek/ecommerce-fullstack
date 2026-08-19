@@ -104,7 +104,7 @@ export default function HeaderClient({ session }: Props) {
   return (
     <header
       ref={headerRef}
-      className="fixed top-8 flex w-full items-center justify-center"
+      className="fixed top-8 z-50 flex w-full items-center justify-center"
     >
       <nav
         ref={navRef}
