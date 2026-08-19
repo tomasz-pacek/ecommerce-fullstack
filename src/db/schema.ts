@@ -204,3 +204,5 @@ export const laptopImageRelations = relations(laptopImages, ({ one }) => ({
     references: [laptops.id],
   }),
 }));
+
+export type Laptop = typeof laptops.$inferSelect;
