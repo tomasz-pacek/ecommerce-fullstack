@@ -32,7 +32,7 @@ export default function LogosSection() {
         speed={90}
         direction="left"
         logoHeight={60}
-        gap={60}
+        gap={40}
         hoverSpeed={20}
         scaleOnHover
         fadeOut
