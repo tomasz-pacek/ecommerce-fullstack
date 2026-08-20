@@ -29,9 +29,13 @@ export default function Breadcrumbs({ items }: Props) {
             <div key={item.label} className="contents">
               <BreadcrumbItem>
                 {isLast ? (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                  <BreadcrumbPage className="capitalize">
+                    {item.label}
+                  </BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                  <BreadcrumbLink href={item.href} className="capitalize">
+                    {item.label}
+                  </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}
