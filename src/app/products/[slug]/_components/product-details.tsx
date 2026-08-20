@@ -4,7 +4,7 @@ import { Laptop } from "@/db/schema";
 import { formatGramsToKilos } from "@/lib/utils/format-grams-to-kilos";
 import { formatPrice } from "@/lib/utils/format-price";
 import { formatSpecValue } from "@/lib/utils/format-spec-value";
-import ImageWrapper from "./image-wrapper";
+import Test from "./test";
 
 type SpecDivProps = {
   label: string;
@@ -18,7 +18,7 @@ type Props = {
 export default function ProductDetails({ laptop }: Props) {
   return (
     <Reveal className="mt-12 grid gap-10 lg:grid-cols-2">
-      <ImageWrapper />
+      <Test />
       <div className="flex flex-col items-start justify-center gap-4">
         <p className="text-muted-foreground font-jetbrains text-sm uppercase">
           SKU {laptop.sku}
