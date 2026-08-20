@@ -1,34 +1,26 @@
 import HeroContent from "./hero-content";
-import HeroImage from "./hero-image";
+import { Laptop } from "@/db/schema";
+import HeroCarousel from "./hero-carousel";
+import { HeroCarouselProvider } from "./hero-context";
+import { mapLaptopToHeroCarouselItem } from "@/lib/home/hero-carousel-mapper";
+import HeroChips from "./hero-chips";
 
-export default function HeroSection() {
+type Props = {
+  featured: Laptop[];
+};
+
+export default function HeroSection({ featured }: Props) {
+  const slides = mapLaptopToHeroCarouselItem(featured);
+
   return (
-    <div className="relative">
-      <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <HeroContent />
-
-        <HeroImage />
+    <HeroCarouselProvider slides={slides}>
+      <div className="relative container mx-auto px-4 pt-40">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <HeroContent />
+          <HeroCarousel />
+        </div>
+        <HeroChips />
       </div>
-
-      <div className="flex flex-wrap gap-2 pt-10">
-        {[
-          "Apple M3",
-          "Integrated GPU",
-          "120Hz",
-          "Sub-1.2kg",
-          "All-day battery",
-          "MIL-SPEC",
-          "4K mini-LED",
-        ].map((chip) => (
-          <span
-            key={chip}
-            data-hero-chip
-            className="border-border text-muted-foreground rounded-full border px-3 py-1 font-mono text-[11px] tracking-wider uppercase"
-          >
-            {chip}
-          </span>
-        ))}
-      </div>
-    </div>
+    </HeroCarouselProvider>
   );
 }

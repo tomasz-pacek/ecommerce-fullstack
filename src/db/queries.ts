@@ -16,3 +16,12 @@ export const getLaptopBySlug = async (slug: string) => {
 
   return product;
 };
+
+export const getHeroLaptops = async () => {
+  "use cache";
+  cacheTag(`hero-laptops`);
+  cacheLife("days");
+  const heroLaptops = await db.select().from(laptops).limit(3);
+
+  return heroLaptops;
+};
