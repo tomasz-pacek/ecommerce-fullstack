@@ -175,9 +175,33 @@ export const laptopImages = pgTable(
   (t) => [index("laptop_images_laptop_id_idx").on(t.laptopId)],
 );
 
+export const cartItems = pgTable(
+  "cart_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    laptopId: uuid("laptop_id")
+      .notNull()
+      .references(() => laptops.id, { onDelete: "cascade" }),
+    quantity: integer("quantity").notNull().default(1),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (t) => [
+    uniqueIndex("cart_items_user_laptop_idx").on(t.userId, t.laptopId),
+    index("cart_items_user_id_idx").on(t.userId),
+  ],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  cartItems: many(cartItems),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -205,4 +229,16 @@ export const laptopImageRelations = relations(laptopImages, ({ one }) => ({
   }),
 }));
 
+export const cartItemRelations = relations(cartItems, ({ one }) => ({
+  user: one(user, {
+    fields: [cartItems.userId],
+    references: [user.id],
+  }),
+  laptop: one(laptops, {
+    fields: [cartItems.laptopId],
+    references: [laptops.id],
+  }),
+}));
+
 export type Laptop = typeof laptops.$inferSelect;
+export type CartItem = typeof cartItems.$inferSelect;

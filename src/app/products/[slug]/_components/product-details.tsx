@@ -4,6 +4,7 @@ import { Laptop } from "@/db/schema";
 import { formatGramsToKilos } from "@/lib/utils/format-grams-to-kilos";
 import { formatPrice } from "@/lib/utils/format-price";
 import { formatSpecValue } from "@/lib/utils/format-spec-value";
+import ImageWrapper from "./image-wrapper";
 
 type SpecDivProps = {
   label: string;
@@ -17,7 +18,7 @@ type Props = {
 export default function ProductDetails({ laptop }: Props) {
   return (
     <Reveal className="mt-12 grid gap-10 lg:grid-cols-2">
-      <div>image here</div>
+      <ImageWrapper />
       <div className="flex flex-col items-start justify-center gap-4">
         <p className="text-muted-foreground font-jetbrains text-sm uppercase">
           SKU {laptop.sku}
@@ -55,7 +56,7 @@ export default function ProductDetails({ laptop }: Props) {
 
 const SpecDiv = ({ label, value }: SpecDivProps) => {
   return (
-    <div className="group bg-card hover:bg-accent flex flex-col gap-2 p-3 transition-colors">
+    <div className="bg-card hover:bg-accent flex flex-col gap-2 p-3 transition-colors">
       <span className="font-jetbrains text-sm uppercase">{label}</span>
       <span className="font-semibold capitalize">{formatSpecValue(value)}</span>
     </div>

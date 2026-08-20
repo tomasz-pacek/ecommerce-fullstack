@@ -21,7 +21,10 @@ export default async function ProductContent({ params }: Props) {
   const breadcrumbItems: BreadcrumbItemsType[] = [
     { label: "Home", href: "/" },
     { label: "Products", href: "/products" },
-    { label: laptop.title, href: `/products/${slug}` as Route },
+    {
+      label: `${laptop.brand} ${laptop.model}`,
+      href: `/products/${slug}` as Route,
+    },
   ];
   return (
     <div className="container mx-auto mt-42 flex flex-col px-4">
