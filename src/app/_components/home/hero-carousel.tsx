@@ -35,19 +35,18 @@ export default function HeroCarousel() {
       <Carousel opts={{ loop: true }} setApi={setApi} className="w-full">
         <CarouselContent>
           {slides.map((slide) => (
-            <CarouselItem
-              key={slide.id}
-              className="border-border bg-muted relative aspect-4/3 overflow-hidden rounded-xl border"
-            >
-              <Link href={slide.href}>
-                <Image
-                  src={slide.image}
-                  alt={slide.alt}
-                  priority
-                  fill
-                  className="rounded-xl object-cover"
-                />
-              </Link>
+            <CarouselItem key={slide.id} className="relative aspect-4/3">
+              <div className="bg-muted relative h-full w-full overflow-hidden rounded-xl">
+                <Link href={slide.href}>
+                  <Image
+                    src={slide.image}
+                    alt={slide.alt}
+                    priority
+                    fill
+                    className="rounded-xl object-cover"
+                  />
+                </Link>
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
