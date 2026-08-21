@@ -12,6 +12,7 @@ export default function HeroDots({ slidesLength, current, onSelect }: Props) {
       {Array.from({ length: slidesLength }).map((_, index) => (
         <button
           onClick={() => onSelect(index)}
+          aria-label={`Go to slide ${current + 1}`}
           key={index}
           className={cn(
             "border-muted-foreground rounded-full border p-2.5",
