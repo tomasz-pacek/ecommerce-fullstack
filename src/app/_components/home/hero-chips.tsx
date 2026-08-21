@@ -5,7 +5,7 @@ import { useHeroCarousel } from "./hero-context";
 export default function HeroChips() {
   const { slide } = useHeroCarousel();
   return (
-    <Reveal key={slide.id} stagger className="flex flex-wrap gap-2 pt-10">
+    <Reveal key={slide.id} stagger className="flex flex-wrap gap-2 pt-4">
       {slide.chips.map((chip) => (
         <span
           key={chip}
