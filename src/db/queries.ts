@@ -25,3 +25,13 @@ export const getHeroLaptops = async () => {
 
   return heroLaptops;
 };
+
+//temp
+export const getLaptops = async () => {
+  "use cache";
+  cacheTag(`laptops`);
+  cacheLife("days");
+  const rows = await db.select().from(laptops).limit(16);
+
+  return rows;
+};
