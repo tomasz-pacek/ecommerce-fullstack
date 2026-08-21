@@ -1,6 +1,7 @@
 import { Laptop } from "@/db/schema";
 import { formatPrice } from "../utils/format-price";
 import { HeroCarouselItem } from "@/types/hero-carousel-item";
+import { Route } from "next";
 
 function buildChips(laptop: Laptop): string[] {
   const chips: string[] = [];
@@ -34,11 +35,11 @@ export function mapLaptopToHeroCarouselItem(
 ): HeroCarouselItem[] {
   return laptops.map((laptop) => ({
     id: laptop.id,
-    name: laptop.title,
+    name: `${laptop.brand} ${laptop.model}`,
     image: "/macbook-pro-16.png",
     alt: laptop.title,
     chips: buildChips(laptop),
     price: formatPrice(laptop.priceCents),
-    href: `/products/${laptop.slug}`,
+    href: `/products/${laptop.slug}` as Route,
   }));
 }

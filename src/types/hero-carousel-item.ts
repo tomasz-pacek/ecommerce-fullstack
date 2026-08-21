@@ -1,3 +1,5 @@
+import { Route } from "next";
+
 export type HeroCarouselItem = {
   id: string;
   name: string;
@@ -5,5 +7,5 @@ export type HeroCarouselItem = {
   alt: string;
   chips: readonly string[];
   price: string;
-  href: string;
+  href: Route;
 };
