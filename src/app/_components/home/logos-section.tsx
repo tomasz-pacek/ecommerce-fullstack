@@ -1,7 +1,6 @@
 "use client";
 import LogoLoop from "@/components/LogoLoop";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+
 import {
   SiApple,
   SiDell,
