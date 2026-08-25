@@ -1,5 +1,7 @@
 "use client";
 import LogoLoop from "@/components/LogoLoop";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import {
   SiApple,
   SiDell,
@@ -26,7 +28,7 @@ const logos = [
 
 export default function LogosSection() {
   return (
-    <div className="py-10">
+    <div className="py-20">
       <LogoLoop
         logos={logos}
         speed={90}
@@ -36,7 +38,6 @@ export default function LogosSection() {
         hoverSpeed={20}
         scaleOnHover
         fadeOut
-        fadeOutColor="#ffffff"
         ariaLabel="Technology partners"
       />
     </div>
