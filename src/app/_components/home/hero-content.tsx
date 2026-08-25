@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function HeroContent() {
   return (
-    <div className="border-border flex w-full max-w-md flex-col border-b">
+    <div className="flex w-full flex-col lg:max-w-150">
       <Reveal
         as="p"
         delay={0.5}
@@ -23,7 +23,7 @@ export default function HeroContent() {
           <span className="block">Compute,</span>
         </span>
         <span className="block overflow-hidden pb-[0.05em]">
-          <span className="text-primary block">curated.</span>
+          <span className="text-primary block">without the guesswork.</span>
         </span>
       </Reveal>
       <Reveal
