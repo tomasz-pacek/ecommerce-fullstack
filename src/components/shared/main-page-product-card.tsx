@@ -10,7 +10,7 @@ type Props = {
   laptop: Laptop;
 };
 
-export default function ProductCard({ laptop }: Props) {
+export default function MainPageProductCard({ laptop }: Props) {
   return (
     <Card className="h-full overflow-hidden p-0">
       <CardContent className="flex h-full flex-col p-1.5">

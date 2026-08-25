@@ -1,4 +1,4 @@
-import ProductCard from "@/components/shared/product-card";
+import MainPageProductCard from "@/components/shared/main-page-product-card";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -44,7 +44,7 @@ export default async function ProductsCarousel({ products }: Props) {
               <div className="grid min-w-0 grid-cols-4 grid-rows-2 gap-4 p-1">
                 {page.map((laptop) => (
                   <div key={laptop.id} className="min-w-0">
-                    <ProductCard laptop={laptop} />
+                    <MainPageProductCard laptop={laptop} />
                   </div>
                 ))}
               </div>
@@ -65,7 +65,7 @@ export default async function ProductsCarousel({ products }: Props) {
               className="min-w-0 basis-1/2 p-1 md:basis-[40%]"
             >
               <div className="">
-                <ProductCard laptop={laptop} />
+                <MainPageProductCard laptop={laptop} />
               </div>
             </CarouselItem>
           ))}
