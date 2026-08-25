@@ -1,4 +1,5 @@
 import ProductCard from "@/components/shared/product-card";
+import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -7,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Laptop } from "@/db/schema";
+import Link from "next/link";
 
 type Props = {
   products: Laptop[];
@@ -20,7 +22,20 @@ export default async function ProductsCarousel({ products }: Props) {
 
   return (
     <>
-      <h2 className="pb-10 text-3xl">Products Carousel</h2>
+      <div className="flex items-center justify-between">
+        <div className="pb-4">
+          <h2 className="text-xl font-medium sm:text-2xl md:text-3xl">
+            Products Carousel
+          </h2>
+          <p className="text-muted-foreground text-sm sm:text-base">
+            some text some text some text
+          </p>
+        </div>
+
+        <Link href="/products">
+          <Button className="rounded-xl">View all</Button>
+        </Link>
+      </div>
 
       <Carousel className="hidden w-full lg:block">
         <CarouselContent>
