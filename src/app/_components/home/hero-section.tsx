@@ -15,7 +15,7 @@ export default function HeroSection({ featured }: Props) {
   return (
     <HeroCarouselProvider slides={slides}>
       <div className="relative container mx-auto px-4 pt-40">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid items-center gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <HeroContent />
           <HeroCarousel />
         </div>
