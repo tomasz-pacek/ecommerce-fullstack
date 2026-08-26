@@ -1,24 +1,38 @@
 import { Suspense } from "react";
 import HeaderServer from "../_components/header-server";
-import { getLaptops } from "@/db/queries";
 import ProductCard from "./_components/product-card";
+import Filters from "./_components/filters";
+import { parseFilters } from "./lib/filters";
+import { getProducts } from "./lib/get-products";
 
-export default async function ProductsPage() {
-  const laptops = await getLaptops();
+type Props = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function ProductsPage({ searchParams }: Props) {
+  const filters = parseFilters(await searchParams);
+  const key = JSON.stringify(filters);
+
+  const { products, facets, total, totalPages } = await getProducts(filters);
 
   return (
     <div>
       <Suspense>
         <HeaderServer />
       </Suspense>
-      <div className="container mx-auto mt-42 flex w-full max-w-6xl px-4">
+      <div className="container mx-auto mt-42 flex w-full max-w-7xl gap-10 px-4">
         <div className="hidden w-1/4 lg:block">
-          <h2>Filters</h2>
+          <Suspense>
+            <Filters facets={facets} activeFilters={filters} />
+          </Suspense>
         </div>
-        <div className="mx-auto grid w-3/4 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {laptops.map((laptop) => (
-            <ProductCard key={laptop.id} laptop={laptop} />
-          ))}
+
+        <div className="mx-auto grid w-3/4 grid-cols-1 content-start items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Suspense key={key}>
+            {products.map((product) => (
+              <ProductCard key={product.id} laptop={product} />
+            ))}
+          </Suspense>
         </div>
       </div>
     </div>
