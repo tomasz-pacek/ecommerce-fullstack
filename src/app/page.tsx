@@ -1,5 +1,6 @@
 import { Suspense, ViewTransition } from "react";
 import HeaderServer from "./_components/header-server";
+import HomeContent from "./_components/home/home-content";
 
 export default function Home() {
   return (
@@ -8,9 +9,8 @@ export default function Home() {
         <Suspense>
           <HeaderServer />
         </Suspense>
-        <div className="h-screen w-full">czesc</div>
-        <div className="h-screen w-full">czesc2</div>
-        <div className="h-screen w-full">czesc3</div>
+
+        <HomeContent />
       </div>
     </ViewTransition>
   );

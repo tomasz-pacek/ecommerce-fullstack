@@ -18,21 +18,21 @@ export const getLaptopBySlug = async (slug: string) => {
   return product;
 };
 
-export const getUserCartItems = async () => {
-  const session = await getCurrentSession();
-  if (!session) throw new Error("Unathorized");
-  const userId = session.user.id;
+export const getHeroLaptops = async () => {
+  "use cache";
+  cacheTag(`hero-laptops`);
+  cacheLife("days");
+  const heroLaptops = await db.select().from(laptops).limit(3);
 
-  const items = await db
-    .select({
-      id: cartItems.id,
-      quantity: cartItems.quantity,
-      laptopId: cartItems.laptopId,
-      priceCents: laptops.priceCents,
-    })
-    .from(cartItems)
-    .innerJoin(laptops, eq(cartItems.laptopId, laptops.id))
-    .where(eq(cartItems.userId, userId));
+  return heroLaptops;
+};
 
-  return items;
+//temp
+export const getLaptops = async () => {
+  "use cache";
+  cacheTag(`laptops`);
+  cacheLife("days");
+  const rows = await db.select().from(laptops).limit(16);
+
+  return rows;
 };
