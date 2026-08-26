@@ -22,6 +22,8 @@ export const brandEnum = pgEnum("laptop_brand", [
   "msi",
   "acer",
 ]);
+export const brands = brandEnum.enumValues;
+export type BrandType = (typeof brands)[number];
 
 export const cpuBrandEnum = pgEnum("cpu_brand", ["intel", "amd", "apple"]);
 export const gpuTypeEnum = pgEnum("gpu_type", ["integrated", "dedicated"]);
