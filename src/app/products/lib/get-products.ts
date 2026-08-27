@@ -3,8 +3,13 @@ import { ParsedFilters } from "./filters";
 import { db } from "@/db";
 import { laptops } from "@/db/schema";
 import { asc, count } from "drizzle-orm";
+import { cacheLife, cacheTag } from "next/cache";
 
 export async function getProducts(filters: ParsedFilters) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("products");
+
   const where = buildWhere(filters);
   const offset = (filters.page - 1) * filters.perPage;
 
