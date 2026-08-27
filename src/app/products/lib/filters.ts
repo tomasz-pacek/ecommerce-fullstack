@@ -33,7 +33,7 @@ export const filtersSchema = z.object({
   priceMin: z.coerce.number().nonnegative().optional(),
   priceMax: z.coerce.number().nonnegative().optional(),
   page: z.coerce.number().int().positive().default(1),
-  perPage: z.coerce.number().int().positive().max(96).default(24),
+  perPage: z.coerce.number().int().positive().default(12),
   sort: z.enum(["price_asc", "price_desc", "newest"]).default("newest"),
 });
 

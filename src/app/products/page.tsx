@@ -4,6 +4,7 @@ import ProductCard from "./_components/product-card";
 import Filters from "./_components/filters";
 import { parseFilters } from "./lib/filters";
 import { getProducts } from "./lib/get-products";
+import CustomPagination from "./_components/custom-pagination";
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -20,19 +21,22 @@ export default async function ProductsPage({ searchParams }: Props) {
       <Suspense>
         <HeaderServer />
       </Suspense>
-      <div className="container mx-auto mt-42 flex w-full max-w-7xl gap-10 px-4">
+      <div className="container mx-auto mt-42 flex min-h-screen w-full max-w-7xl gap-10 px-4 pb-10">
         <div className="hidden w-1/4 lg:block">
           <Suspense>
             <Filters facets={facets} activeFilters={filters} />
           </Suspense>
         </div>
 
-        <div className="mx-auto grid w-3/4 grid-cols-1 content-start items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Suspense key={key}>
-            {products.map((product) => (
-              <ProductCard key={product.id} laptop={product} />
-            ))}
-          </Suspense>
+        <div className="flex w-3/4 flex-col gap-8">
+          <div className="mx-auto grid grid-cols-1 content-start items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Suspense key={key}>
+              {products.map((product) => (
+                <ProductCard key={product.id} laptop={product} />
+              ))}
+            </Suspense>
+          </div>
+          <CustomPagination totalPages={totalPages} />
         </div>
       </div>
     </div>

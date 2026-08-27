@@ -44,11 +44,12 @@ export default function Filters({ facets, activeFilters }: Props) {
 
     if (next.length > 0) {
       params.set(key, next.join(","));
+      params.set("page", "1");
     } else {
       params.delete(key);
     }
 
-    router.push(`${pathname}?${params.toString()}` as Route, { scroll: false });
+    router.push(`${pathname}?${params.toString()}` as Route);
   }
 
   return (
