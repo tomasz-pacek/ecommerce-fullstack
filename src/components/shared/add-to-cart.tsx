@@ -1,38 +1,44 @@
 "use client";
 
 import { Laptop } from "@/db/schema";
-import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { useState, useTransition } from "react";
 import ActionButton from "./action-button";
-import { addToCart } from "@/actions/cart";
 import { toast } from "../ui/toast";
+import { addToCart } from "@/actions/cart";
+import { useRouter } from "next/navigation";
 
 type Props = {
   laptop: Laptop;
 };
 
 export default function AddToCart({ laptop }: Props) {
+  const router = useRouter();
   const [quantity, setQuantity] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
   const soldOut = laptop.quantity <= 0;
 
-  const handleAddToCart = async () => {
-    setIsLoading(true);
-    addToCart(laptop.id, quantity)
-      .then((result) => {
-        if (!result.success) {
-          toast.add({ title: result.error, type: "error" });
-        } else {
-          toast.add({ title: "Product added to cart", type: "success" });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.add({ title: "Something went wrong", type: "error" });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+  const handleAddToCart = () => {
+    startTransition(async () => {
+      const result = await addToCart(laptop.id, quantity);
+      if (result.success) {
+        toast.add({
+          title: "Product added to cart",
+          type: "success",
+          actionProps: {
+            children: <ShoppingCart />,
+            onClick() {
+              router.push("/cart");
+            },
+          },
+        });
+      } else {
+        toast.add({
+          title: result.error,
+          type: "error",
+        });
+      }
+    });
   };
 
   return (
@@ -59,8 +65,8 @@ export default function AddToCart({ laptop }: Props) {
       <ActionButton
         className="rounded-full p-5.5"
         onClick={handleAddToCart}
-        isPending={isLoading}
-        disabled={isLoading}
+        isPending={isPending}
+        disabled={isPending || soldOut}
       >
         Add to Cart
       </ActionButton>
