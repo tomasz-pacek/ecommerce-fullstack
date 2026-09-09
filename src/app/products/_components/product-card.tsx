@@ -36,7 +36,7 @@ export default function ProductCard({ laptop }: Props) {
           <ProductCardSpecs laptop={laptop} />
 
           <div className="mt-auto flex items-center justify-between pt-4">
-            <p className="font-semibold md:text-lg">
+            <p className="text-lg font-semibold">
               {formatPrice(laptop.priceCents)}
             </p>
 
