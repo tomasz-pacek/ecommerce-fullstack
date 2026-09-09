@@ -21,6 +21,7 @@ export async function getProducts(filters: ParsedFilters) {
     processorFacets,
     brandFacets,
     osFacets,
+    memoryFacets,
   ] = await Promise.all([
     db
       .select()
@@ -65,6 +66,14 @@ export async function getProducts(filters: ParsedFilters) {
       .where(buildWhere(filters, "os"))
       .groupBy(laptops.os)
       .orderBy(asc(laptops.os)),
+
+    db
+      .select({ value: laptops.storageGb, count: count() })
+      .from(laptops)
+      .where(buildWhere(filters, "memory"))
+      .groupBy(laptops.storageGb)
+      .orderBy(asc(laptops.storageGb)),
+    ,
   ]);
 
   return {
@@ -77,6 +86,7 @@ export async function getProducts(filters: ParsedFilters) {
       processor: processorFacets,
       brand: brandFacets,
       os: osFacets,
+      memory: memoryFacets,
     },
   };
 }

@@ -10,4 +10,5 @@ export type Facets = {
   processor: FacetCount[];
   graphics: FacetCount[];
   ram: { value: number; count: number }[];
+  memory: { value: number; count: number }[];
 };
