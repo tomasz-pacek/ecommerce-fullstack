@@ -7,30 +7,14 @@ import ActionButton from "@/components/shared/action-button";
 import { ShoppingCartIcon } from "lucide-react";
 import { Laptop } from "@/db/schema";
 import ProductCardSpecs from "./product-card-specs";
-import { useTransition } from "react";
-import { addToCart } from "@/actions/cart";
-import { toast } from "@/components/ui/toast";
+import useAddToCart from "@/hooks/use-add-to-cart";
 
 type Props = {
   laptop: Laptop;
 };
 
 export default function ProductCard({ laptop }: Props) {
-  const [isPending, startTransition] = useTransition();
-
-  const handleAddToCart = () => {
-    startTransition(async () => {
-      try {
-        await addToCart(laptop.id, 1);
-        toast.add({ title: "Product added to cart", type: "success" });
-      } catch (error) {
-        toast.add({
-          title: `Something went wrong: ${error}`,
-          type: "error",
-        });
-      }
-    });
-  };
+  const { handleAddToCart, isPending } = useAddToCart(laptop.id);
 
   return (
     <Card className="h-full p-0">
@@ -57,7 +41,7 @@ export default function ProductCard({ laptop }: Props) {
             </p>
 
             <ActionButton
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart()}
               isPending={isPending}
               className="shrink-0 rounded-full p-2"
             >
