@@ -11,17 +11,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Route } from "next";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type FacetConfig = {
   key: keyof Facets;
   label: string;
+  format?: (value: string | number) => string;
 };
 
 const FACET_CONFIG: FacetConfig[] = [
   { key: "brand", label: "Brand " },
   { key: "processor", label: "Processor " },
   { key: "graphics", label: "Graphics" },
-  { key: "ram", label: "RAM " },
+  { key: "ram", label: "RAM ", format: (v) => `${v} GB` },
+  { key: "memory", label: "Storage", format: (v) => `${v} GB` },
 ];
 
 type Props = {
@@ -61,32 +65,41 @@ export default function Filters({ facets, activeFilters }: Props) {
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-2">
-          <Accordion>
-            {FACET_CONFIG.map(({ key, label }) => {
+        <div className="">
+          <Accordion multiple>
+            {FACET_CONFIG.map(({ key, label, format }) => {
               const options = facets[key];
               if (!options?.length) return null;
 
               return (
                 <AccordionItem key={key} value={key}>
-                  <AccordionTrigger>{label}</AccordionTrigger>
-                  <AccordionContent className="flex flex-col">
+                  <AccordionTrigger className="text-base">
+                    {label}
+                  </AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-2">
                     {options.map(({ value, count }) => {
                       const stringValue = String(value);
+                      const displayValue = format
+                        ? format(stringValue)
+                        : stringValue;
                       const filterValue = activeFilters[key];
                       const checked = Array.isArray(filterValue)
                         ? filterValue.some((x) => x === value)
                         : false;
 
                       return (
-                        <label key={value} className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
+                        <Label
+                          key={displayValue}
+                          className="flex cursor-pointer items-center gap-2 font-normal"
+                        >
+                          <Checkbox
                             checked={checked}
-                            onChange={() => toggleFilter(key, stringValue)}
+                            onCheckedChange={() =>
+                              toggleFilter(key, stringValue)
+                            }
                           />
-                          {value} ({count})
-                        </label>
+                          {displayValue} ({count})
+                        </Label>
                       );
                     })}
                   </AccordionContent>
