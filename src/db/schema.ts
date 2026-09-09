@@ -138,7 +138,7 @@ export const laptops = pgTable(
     refreshRateHz: integer("refresh_rate_hz"),
 
     cpuBrand: cpuBrandEnum("cpu_brand").notNull(),
-    cpuModel: varchar("cpu_model", { length: 60 }),
+    cpuModel: varchar("cpu_model", { length: 60 }).notNull(),
     gpuType: gpuTypeEnum("gpu_type").notNull(),
     gpuModel: varchar("gpu_model", { length: 60 }),
     storageType: storageTypeEnum("storage_type").notNull(),
