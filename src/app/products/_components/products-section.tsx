@@ -3,6 +3,7 @@ import { getProducts } from "../lib/get-products";
 import CustomPagination from "./custom-pagination";
 import Filters from "./filters";
 import FiltersMobile from "./filters-mobile";
+import GridTab from "./grid-tab";
 import ProductGrid from "./product-grid";
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 
 export default async function ProductsSection({ searchParams }: Props) {
   const filters = parseFilters(await searchParams);
-  const { products, facets, totalPages } = await getProducts(filters);
+  const { products, facets, totalPages, total } = await getProducts(filters);
 
   return (
     <>
@@ -23,7 +24,8 @@ export default async function ProductsSection({ searchParams }: Props) {
         <FiltersMobile facets={facets} activeFilters={filters} />
       </div>
 
-      <div className="flex flex-col gap-8 lg:w-3/4">
+      <div className="flex flex-col gap-6 lg:w-3/4">
+        <GridTab total={total} />
         <ProductGrid products={products} />
         <CustomPagination totalPages={totalPages} />
       </div>

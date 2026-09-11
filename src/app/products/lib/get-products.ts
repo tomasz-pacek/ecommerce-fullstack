@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { laptops } from "@/db/schema";
 import { asc, count } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
+import { buildOrderBy } from "./build-orderBy";
 
 export async function getProducts(filters: ParsedFilters) {
   "use cache";
@@ -11,6 +12,7 @@ export async function getProducts(filters: ParsedFilters) {
   cacheTag("products");
 
   const where = buildWhere(filters);
+  const orderBy = buildOrderBy(filters);
   const offset = (filters.page - 1) * filters.perPage;
 
   const [
@@ -28,7 +30,8 @@ export async function getProducts(filters: ParsedFilters) {
       .from(laptops)
       .where(where)
       .limit(filters.perPage)
-      .offset(offset),
+      .offset(offset)
+      .orderBy(orderBy),
 
     db.select({ count: count() }).from(laptops).where(where),
 
@@ -73,7 +76,6 @@ export async function getProducts(filters: ParsedFilters) {
       .where(buildWhere(filters, "memory"))
       .groupBy(laptops.storageGb)
       .orderBy(asc(laptops.storageGb)),
-    ,
   ]);
 
   return {
