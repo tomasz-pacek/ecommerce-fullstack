@@ -2,7 +2,6 @@ import { parseFilters } from "../lib/filters";
 import { getProducts } from "../lib/get-products";
 import CustomPagination from "./custom-pagination";
 import Filters from "./filters";
-import FiltersMobile from "./filters-mobile";
 import GridTab from "./grid-tab";
 import ProductGrid from "./product-grid";
 
@@ -20,12 +19,8 @@ export default async function ProductsSection({ searchParams }: Props) {
         <Filters facets={facets} activeFilters={filters} />
       </div>
 
-      <div className="lg:hidden">
-        <FiltersMobile facets={facets} activeFilters={filters} />
-      </div>
-
       <div className="flex flex-col gap-6 lg:w-3/4">
-        <GridTab total={total} />
+        <GridTab total={total} facets={facets} filters={filters} />
         <ProductGrid products={products} />
         <CustomPagination totalPages={totalPages} />
       </div>
