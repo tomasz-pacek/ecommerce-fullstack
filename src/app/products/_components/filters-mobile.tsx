@@ -31,12 +31,12 @@ export default function FiltersMobile({ facets, activeFilters }: Props) {
         render={
           <Button variant="outline" className="gap-2">
             <SlidersHorizontal className="h-4 w-4" />
-            Filters
+            <p className="xs:block hidden">Filters</p>
           </Button>
         }
       />
-      <DrawerContent className="max-h-[85vh] overflow-y-auto">
-        <DrawerHeader className="border-b p-3">
+      <DrawerContent className="max-h-[85vh]">
+        <DrawerHeader className="p-3">
           {/* todo: add filter count next to filters title*/}
           <DrawerTitle className="flex items-center justify-between text-lg">
             Filters

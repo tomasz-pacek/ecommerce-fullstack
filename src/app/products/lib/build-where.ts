@@ -1,6 +1,7 @@
 import { and, gte, inArray, lte, SQL } from "drizzle-orm";
 import { ParsedFilters } from "./filters";
 import { laptops } from "@/db/schema";
+import { priceToCents } from "@/lib/utils/price-to-cents";
 
 export function buildWhere(
   filters: ParsedFilters,
@@ -27,10 +28,10 @@ export function buildWhere(
     conditions.push(inArray(laptops.os, filters.os));
   }
   if (filters.priceMin !== undefined) {
-    conditions.push(gte(laptops.priceCents, filters.priceMin));
+    conditions.push(gte(laptops.priceCents, priceToCents(filters.priceMin)));
   }
   if (filters.priceMax !== undefined) {
-    conditions.push(lte(laptops.priceCents, filters.priceMax));
+    conditions.push(lte(laptops.priceCents, priceToCents(filters.priceMax)));
   }
 
   return conditions.length ? and(...conditions) : undefined;
