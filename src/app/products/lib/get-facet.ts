@@ -31,9 +31,11 @@ async function getFacetCounts(key: FacetKey, filters: ParsedFilters) {
     .orderBy(desc(count()));
 }
 
+type FacetValue = string | number;
+
 function mergeFacet(
-  allValues: { value: unknown }[],
-  counts: { value: unknown; count: number }[],
+  allValues: { value: FacetValue | null }[],
+  counts: { value: FacetValue | null; count: number }[],
 ) {
   const countMap = new Map(counts.map((c) => [String(c.value), c.count]));
 
