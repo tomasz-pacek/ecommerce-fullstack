@@ -82,12 +82,14 @@ export default function FiltersContent({ facets, activeFilters }: Props) {
                     <Label
                       key={displayValue}
                       className={cn(
-                        count === 0 && "text-muted-foreground",
-                        "flex cursor-pointer items-center gap-2 font-normal",
+                        count === 0
+                          ? "text-muted-foreground"
+                          : "cursor-pointer",
+                        "flex items-center gap-2 font-normal",
                       )}
                     >
                       <Checkbox
-                        disabled={count === 0}
+                        disabled={count === 0 && !checked}
                         checked={checked}
                         onCheckedChange={() => toggleFilter(key, stringValue)}
                       />
