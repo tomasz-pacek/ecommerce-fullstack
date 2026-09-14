@@ -11,6 +11,7 @@ import { ParsedFilters } from "../lib/filters";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Route } from "next";
 import PriceSection from "./price-section";
+import { cn } from "@/lib/utils";
 
 type FacetConfig = {
   key: keyof Facets;
@@ -80,9 +81,13 @@ export default function FiltersContent({ facets, activeFilters }: Props) {
                   return (
                     <Label
                       key={displayValue}
-                      className="flex cursor-pointer items-center gap-2 font-normal"
+                      className={cn(
+                        count === 0 && "text-muted-foreground",
+                        "flex cursor-pointer items-center gap-2 font-normal",
+                      )}
                     >
                       <Checkbox
+                        disabled={count === 0}
                         checked={checked}
                         onCheckedChange={() => toggleFilter(key, stringValue)}
                       />
