@@ -10,8 +10,8 @@ export default function ProductGrid({ products }: Props) {
     <>
       {products.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-2 py-2">
-          <p className="text-2xl">No products found</p>
-          <p className="text-muted-foreground">
+          <p className="text-2xl text-nowrap">No products found</p>
+          <p className="text-muted-foreground text-center text-pretty">
             Try removing selected filters to expand your search{" "}
           </p>
         </div>
