@@ -261,10 +261,42 @@ export const purchases = pgTable("purchases", {
     .unique(),
   stripePaymentIntentId: text("stripe_payment_intent_id"),
 
-  productId: text("product_id"),
+  purchaseId: text("purchaseId"),
   amount: integer("amount"),
   currency: text("currency").default("usd"),
   status: text("status").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const purchaseItems = pgTable(
+  "purchase_items",
+  {
+    id: text("id").primaryKey(),
+    purchaseId: text("purchase_id")
+      .notNull()
+      .references(() => purchases.id, { onDelete: "cascade" }),
+    laptopId: uuid("laptop_id")
+      .notNull()
+      .references(() => laptops.id),
+    quantity: integer("quantity").notNull(),
+    unitPriceCents: integer("unit_price_cents").notNull(),
+    titleSnapshot: varchar("title_snapshot", { length: 200 }).notNull(),
+  },
+  (t) => [index("purchase_items_purchase_id_idx").on(t.purchaseId)],
+);
+
+export const purchaseItemRelations = relations(purchaseItems, ({ one }) => ({
+  purchase: one(purchases, {
+    fields: [purchaseItems.purchaseId],
+    references: [purchases.id],
+  }),
+  laptop: one(laptops, {
+    fields: [purchaseItems.laptopId],
+    references: [laptops.id],
+  }),
+}));
+
+export const purchaseRelations = relations(purchases, ({ many }) => ({
+  items: many(purchaseItems),
+}));
