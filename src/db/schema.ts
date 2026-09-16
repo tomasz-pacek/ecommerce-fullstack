@@ -11,6 +11,7 @@ import {
   integer,
   uniqueIndex,
   numeric,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 export const brandEnum = pgEnum("laptop_brand", [
@@ -40,6 +41,8 @@ export type StorageType = (typeof storageTypes)[number];
 export const operatingSystems = osEnum.enumValues;
 export type OperatingSystemType = (typeof operatingSystems)[number];
 
+export const user_role = pgEnum("user_role", ["user", "admin"]);
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -52,6 +55,8 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  role: user_role("role"),
 });
 
 export const session = pgTable(
@@ -243,3 +248,23 @@ export const cartItemRelations = relations(cartItems, ({ one }) => ({
 
 export type Laptop = typeof laptops.$inferSelect;
 export type CartItem = typeof cartItems.$inferSelect;
+
+export const purchases = pgTable("purchases", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id),
+
+  stripeCustomerId: text("stripe_customer_id").notNull(),
+  stripeCheckoutSessionId: text("stripe_checkout_session_id")
+    .notNull()
+    .unique(),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+
+  productId: text("product_id"),
+  amount: integer("amount"),
+  currency: text("currency").default("usd"),
+  status: text("status").notNull(),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});

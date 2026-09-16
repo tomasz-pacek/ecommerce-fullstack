@@ -18,5 +18,6 @@ export type Session = {
     name: string;
     image?: string | null | undefined;
     lastName: string;
+    stripeCustomerId: string;
   };
 } | null;
