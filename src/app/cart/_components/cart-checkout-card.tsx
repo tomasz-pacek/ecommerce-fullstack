@@ -1,11 +1,11 @@
 "use client";
 
-import ActionButton from "@/components/shared/action-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/lib/utils/format-price";
 import { cn } from "@/lib/utils";
 import { useCart } from "../_contexts/cart-provider";
+import CartCheckoutButton from "./cart-checkout-button";
 
 export default function CartCheckoutCard() {
   const { items, isPending } = useCart();
@@ -45,12 +45,10 @@ export default function CartCheckoutCard() {
             {formatPrice(totalPrice)}
           </span>
         </div>
-        <ActionButton
-          className="w-full rounded-lg py-5 text-sm"
-          disabled={isPending}
-        >
-          Checkout
-        </ActionButton>
+        <CartCheckoutButton
+          isPending={isPending}
+          cartItems={items.map((item) => item.cart_items)}
+        />
       </CardContent>
     </Card>
   );
