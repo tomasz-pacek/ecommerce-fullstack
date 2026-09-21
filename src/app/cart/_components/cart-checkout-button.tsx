@@ -1,19 +1,18 @@
 import { createCheckoutSession } from "@/actions/checkout";
 import ActionButton from "@/components/shared/action-button";
-import { CartItem } from "@/db/schema";
 
 type Props = {
   isPending: boolean;
-  cartItems: CartItem[];
+  itemCount: number;
 };
 
-export default function CartCheckoutButton({ isPending, cartItems }: Props) {
+export default function CartCheckoutButton({ isPending, itemCount }: Props) {
   return (
-    <form action={() => createCheckoutSession(cartItems)}>
+    <form action={createCheckoutSession}>
       <ActionButton
         type="submit"
         className="w-full rounded-lg py-5 text-sm"
-        disabled={isPending || cartItems.length === 0}
+        disabled={isPending || itemCount === 0}
       >
         Checkout
       </ActionButton>

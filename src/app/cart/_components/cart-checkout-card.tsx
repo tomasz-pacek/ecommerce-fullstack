@@ -45,10 +45,7 @@ export default function CartCheckoutCard() {
             {formatPrice(totalPrice)}
           </span>
         </div>
-        <CartCheckoutButton
-          isPending={isPending}
-          cartItems={items.map((item) => item.cart_items)}
-        />
+        <CartCheckoutButton isPending={isPending} itemCount={items.length} />
       </CardContent>
     </Card>
   );

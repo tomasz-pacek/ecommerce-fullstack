@@ -1,10 +1,61 @@
 import { db } from "@/db";
-import { purchases, cartItems, purchaseItems, laptops } from "@/db/schema";
+import { purchases, cartItems, purchaseItems } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import Stripe from "stripe";
+import { releasePurchase } from "@/lib/checkout/release-purchase";
+
+async function fulfill(session: Stripe.Checkout.Session) {
+  if (session.payment_status !== "paid") return;
+
+  const purchaseId = session.metadata?.purchaseId;
+  if (!purchaseId) {
+    console.error("No purchaseId for session", session.id);
+    return;
+  }
+
+  await db.transaction(async (tx) => {
+    const [claimed] = await tx
+      .update(purchases)
+      .set({
+        status: "paid",
+        stripePaymentIntentId:
+          typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : session.payment_intent?.id,
+      })
+      .where(
+        and(
+          eq(purchases.id, purchaseId),
+          eq(purchases.status, "pending"),
+          eq(purchases.amount, session.amount_total ?? -1),
+        ),
+      )
+      .returning({ userId: purchases.userId });
+
+    if (!claimed) {
+      console.warn("Purchase not claimed", purchaseId, session.id);
+      return;
+    }
+
+    const items = await tx
+      .select({ laptopId: purchaseItems.laptopId })
+      .from(purchaseItems)
+      .where(eq(purchaseItems.purchaseId, purchaseId));
+
+    await tx.delete(cartItems).where(
+      and(
+        eq(cartItems.id, claimed.userId),
+        inArray(
+          cartItems.laptopId,
+          items.map((i) => i.laptopId),
+        ),
+      ),
+    );
+  });
+}
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -27,69 +78,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  switch (event.type) {
-    case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const purchaseId = session.metadata?.purchaseId;
+  try {
+    switch (event.type) {
+      case "checkout.session.completed":
+      case "checkout.session.async_payment_succeeded":
+        await fulfill(event.data.object as Stripe.Checkout.Session);
+        break;
 
-      if (!purchaseId) {
-        console.error("No purchaseId in metadata for session", session.id);
+      case "checkout.session.expired": {
+        const s = event.data.object as Stripe.Checkout.Session;
+        const purchaseId = s.metadata?.purchaseId;
+        if (purchaseId) await releasePurchase(purchaseId, "expired");
         break;
       }
 
-      const [purchase] = await db
-        .select()
-        .from(purchases)
-        .where(eq(purchases.id, purchaseId))
-        .limit(1);
-
-      if (!purchase) {
-        console.error("Purchase not found", purchaseId);
+      default:
         break;
-      }
-
-      if (purchase.status === "paid") break;
-
-      await db
-        .update(purchases)
-        .set({
-          status: "paid",
-          stripePaymentIntentId: session.payment_intent as string,
-        })
-        .where(eq(purchases.id, purchaseId));
-
-      const items = await db
-        .select()
-        .from(purchaseItems)
-        .where(eq(purchaseItems.id, purchaseId));
-
-      for (const item of items) {
-        await db
-          .update(laptops)
-          .set({ quantity: sql`${laptops.quantity} - ${item.quantity}` })
-          .where(eq(laptops.id, item.laptopId));
-      }
-
-      await db.delete(cartItems).where(eq(cartItems.userId, purchase.userId));
-
-      break;
     }
-
-    case "checkout.session.expired": {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const purchaseId = session.metadata?.purchaseId;
-
-      if (purchaseId) {
-        await db
-          .update(purchases)
-          .set({ status: "expired" })
-          .where(eq(purchases.id, purchaseId));
-      }
-      break;
-    }
-
-    default:
-      break;
+  } catch (err) {
+    console.error("Webhook handler failed", event.id, err);
+    return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });
