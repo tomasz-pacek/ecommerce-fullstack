@@ -41,7 +41,7 @@ export default function SelectSort() {
   return (
     <Select
       items={SORT_OPTIONS}
-      defaultValue={defaultSortOption.value}
+      value={currentValue}
       onValueChange={(value: string | null) => {
         if (value) {
           handleSelect(value);
