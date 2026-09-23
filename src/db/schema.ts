@@ -22,6 +22,8 @@ export const brandEnum = pgEnum("laptop_brand", [
   "msi",
   "acer",
 ]);
+export const brands = brandEnum.enumValues;
+export type BrandType = (typeof brands)[number];
 
 export const cpuBrandEnum = pgEnum("cpu_brand", ["intel", "amd", "apple"]);
 export const gpuTypeEnum = pgEnum("gpu_type", ["integrated", "dedicated"]);
@@ -136,7 +138,7 @@ export const laptops = pgTable(
     refreshRateHz: integer("refresh_rate_hz"),
 
     cpuBrand: cpuBrandEnum("cpu_brand").notNull(),
-    cpuModel: varchar("cpu_model", { length: 60 }),
+    cpuModel: varchar("cpu_model", { length: 60 }).notNull(),
     gpuType: gpuTypeEnum("gpu_type").notNull(),
     gpuModel: varchar("gpu_model", { length: 60 }),
     storageType: storageTypeEnum("storage_type").notNull(),
