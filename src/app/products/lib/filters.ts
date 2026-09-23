@@ -30,11 +30,23 @@ export const filtersSchema = z.object({
   os: csvEnum(osEnum.enumValues),
   ram: csvNumbers,
   memory: csvNumbers,
-  priceMin: z.coerce.number().nonnegative().optional(),
-  priceMax: z.coerce.number().nonnegative().optional(),
-  page: z.coerce.number().int().positive().default(1),
-  perPage: z.coerce.number().int().positive().default(12),
-  sort: z.enum(["price_asc", "price_desc", "newest"]).default("newest"),
+  priceMin: z.coerce
+    .number()
+    .min(0)
+    .max(999_999)
+    .nonnegative()
+    .optional()
+    .catch(undefined),
+  priceMax: z.coerce
+    .number()
+    .min(0)
+    .max(999_999)
+    .nonnegative()
+    .optional()
+    .catch(undefined),
+  page: z.coerce.number().int().positive().catch(1),
+  perPage: z.coerce.number().int().positive().catch(12),
+  sort: z.enum(["price_asc", "price_desc", "newest"]).catch("newest"),
 });
 
 export type ParsedFilters = z.infer<typeof filtersSchema>;
