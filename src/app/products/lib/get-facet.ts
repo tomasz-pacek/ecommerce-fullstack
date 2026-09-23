@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { laptops } from "@/db/schema";
 import { FACET_COLUMNS, FacetKey } from "@/types/facet-colums";
+import { Facets } from "@/types/facets";
 import { asc, count, desc } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { buildWhere } from "./build-where";
@@ -42,16 +43,19 @@ function mergeFacet(
   return allValues
     .filter((v) => v.value !== null)
     .map((v) => ({
-      value: v.value,
+      value: v.value!,
       count: countMap.get(String(v.value)) ?? 0,
     }))
     .sort((a, b) => b.count - a.count);
 }
 
-export async function getFacet(key: FacetKey, filters: ParsedFilters) {
+export async function getFacet<K extends FacetKey>(
+  key: K,
+  filters: ParsedFilters,
+): Promise<Facets[K]> {
   const [allValues, counts] = await Promise.all([
     getFacetAllValues(key),
     getFacetCounts(key, filters),
   ]);
-  return mergeFacet(allValues, counts);
+  return mergeFacet(allValues, counts) as Facets[K];
 }

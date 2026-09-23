@@ -5,17 +5,8 @@ import { laptops } from "@/db/schema";
 import { count } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { buildOrderBy } from "./build-orderBy";
-import { FacetKey } from "@/types/facet-colums";
 import { getFacet } from "./get-facet";
-
-const facetKeys: FacetKey[] = [
-  "ram",
-  "graphics",
-  "processor",
-  "brand",
-  "os",
-  "memory",
-];
+import { Facets } from "@/types/facets";
 
 export async function getProducts(filters: ParsedFilters) {
   "use cache";
@@ -26,23 +17,27 @@ export async function getProducts(filters: ParsedFilters) {
   const orderBy = buildOrderBy(filters);
   const offset = (filters.page - 1) * filters.perPage;
 
-  const [products, totalResult, ...facetResults] = await Promise.all([
-    db
-      .select()
-      .from(laptops)
-      .where(where)
-      .limit(filters.perPage)
-      .offset(offset)
-      .orderBy(orderBy),
+  const [products, totalResult, ram, graphics, processor, brand, os, memory] =
+    await Promise.all([
+      db
+        .select()
+        .from(laptops)
+        .where(where)
+        .limit(filters.perPage)
+        .offset(offset)
+        .orderBy(orderBy),
 
-    db.select({ count: count() }).from(laptops).where(where),
+      db.select({ count: count() }).from(laptops).where(where),
 
-    ...facetKeys.map((key) => getFacet(key, filters)),
-  ]);
+      getFacet("ram", filters),
+      getFacet("graphics", filters),
+      getFacet("processor", filters),
+      getFacet("brand", filters),
+      getFacet("os", filters),
+      getFacet("memory", filters),
+    ]);
 
-  const facets = Object.fromEntries(
-    facetKeys.map((key, i) => [key, facetResults[i]]),
-  );
+  const facets: Facets = { ram, graphics, processor, brand, os, memory };
 
   return {
     products,

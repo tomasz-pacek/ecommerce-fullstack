@@ -24,6 +24,7 @@ const FACET_CONFIG: FacetConfig[] = [
   { key: "processor", label: "Processor " },
   { key: "graphics", label: "Graphics" },
   { key: "ram", label: "RAM ", format: (v) => `${v} GB` },
+  { key: "os", label: "Operating system" },
   { key: "memory", label: "Storage", format: (v) => `${v} GB` },
 ];
 
