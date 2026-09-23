@@ -31,7 +31,8 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
 
 export default function CustomPagination({ totalPages }: Props) {
   const searchParams = useSearchParams();
-  const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
+  const rawPage = Math.floor(Number(searchParams.get("page"))) || 1;
+  const currentPage = Math.min(Math.max(1, rawPage), Math.max(1, totalPages));
 
   function buildHref(page: number) {
     const params = new URLSearchParams(searchParams.toString());
