@@ -57,12 +57,20 @@ export default async function ProductsCarousel({ products }: Props) {
         </div>
       </Carousel>
 
-      <Carousel className="w-full lg:hidden">
-        <CarouselContent>
+      <Carousel
+        opts={{
+          align: "start",
+          containScroll: "trimSnaps",
+          skipSnaps: true,
+          duration: 30,
+        }}
+        className="w-full lg:hidden"
+      >
+        <CarouselContent className="ml-0">
           {products.map((laptop) => (
             <CarouselItem
               key={laptop.id}
-              className="min-w-0 basis-1/2 p-1 md:basis-[40%]"
+              className="min-w-0 basis-1/2 p-1 md:basis-[35%]"
             >
               <div className="">
                 <MainPageProductCard laptop={laptop} />
