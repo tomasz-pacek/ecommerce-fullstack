@@ -4,42 +4,16 @@ import { Laptop } from "@/db/schema";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useState, useTransition } from "react";
 import ActionButton from "./action-button";
-import { toast } from "../ui/toast";
-import { addToCart } from "@/actions/cart";
-import { useRouter } from "next/navigation";
+import useAddToCart from "@/hooks/use-add-to-cart";
 
 type Props = {
   laptop: Laptop;
 };
 
 export default function AddToCart({ laptop }: Props) {
-  const router = useRouter();
+  const { handleAddToCart, isPending } = useAddToCart(laptop.id);
   const [quantity, setQuantity] = useState<number>(1);
-  const [isPending, startTransition] = useTransition();
   const soldOut = laptop.quantity <= 0;
-
-  const handleAddToCart = () => {
-    startTransition(async () => {
-      const result = await addToCart(laptop.id, quantity);
-      if (result.success) {
-        toast.add({
-          title: "Product added to cart",
-          type: "success",
-          actionProps: {
-            children: <ShoppingCart />,
-            onClick() {
-              router.push("/cart");
-            },
-          },
-        });
-      } else {
-        toast.add({
-          title: result.error,
-          type: "error",
-        });
-      }
-    });
-  };
 
   return (
     <div className="flex items-center justify-center gap-4 sm:flex-row">
@@ -64,7 +38,7 @@ export default function AddToCart({ laptop }: Props) {
       </div>
       <ActionButton
         className="rounded-full p-5.5"
-        onClick={handleAddToCart}
+        onClick={() => handleAddToCart(quantity)}
         isPending={isPending}
         disabled={isPending || soldOut}
       >
