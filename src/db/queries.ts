@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from ".";
-import { cartItems, laptops } from "./schema";
+import { laptops } from "./schema";
 import { cacheLife, cacheTag } from "next/cache";
-import { getCurrentSession } from "@/lib/auth-utils";
 
 export const getLaptopBySlug = async (slug: string) => {
   "use cache";

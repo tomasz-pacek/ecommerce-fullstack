@@ -1,8 +1,8 @@
 "use client";
 
 import { Laptop } from "@/db/schema";
-import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { useState, useTransition } from "react";
 import ActionButton from "./action-button";
 import useAddToCart from "@/hooks/use-add-to-cart";
 

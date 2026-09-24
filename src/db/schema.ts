@@ -181,9 +181,8 @@ export const cartItems = pgTable(
   "cart_items",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    guestId: text("guest_id"),
     laptopId: uuid("laptop_id")
       .notNull()
       .references(() => laptops.id, { onDelete: "cascade" }),
@@ -196,7 +195,9 @@ export const cartItems = pgTable(
   },
   (t) => [
     uniqueIndex("cart_items_user_laptop_idx").on(t.userId, t.laptopId),
+    uniqueIndex("cart_items_guest_laptop_idx").on(t.guestId, t.laptopId),
     index("cart_items_user_id_idx").on(t.userId),
+    index("cart_items_guest_id_idx").on(t.guestId),
   ],
 );
 
