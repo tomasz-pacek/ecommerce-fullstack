@@ -47,7 +47,7 @@ async function fulfill(session: Stripe.Checkout.Session) {
 
     await tx.delete(cartItems).where(
       and(
-        eq(cartItems.id, claimed.userId),
+        eq(cartItems.userId, claimed.userId),
         inArray(
           cartItems.laptopId,
           items.map((i) => i.laptopId),
