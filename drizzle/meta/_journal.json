@@ -15,6 +15,13 @@
       "when": 1789557754162,
       "tag": "0001_yummy_nightcrawler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790605399132,
+      "tag": "0002_magical_sentinels",
+      "breakpoints": true
     }
   ]
 }

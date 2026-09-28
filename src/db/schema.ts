@@ -257,15 +257,12 @@ export const purchases = pgTable("purchases", {
     .notNull()
     .references(() => user.id),
 
-  stripeCustomerId: text("stripe_customer_id").notNull(),
-  stripeCheckoutSessionId: text("stripe_checkout_session_id")
-    .notNull()
-    .unique(),
-  stripePaymentIntentId: text("stripe_payment_intent_id"),
-
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeCheckoutSessionId: text("stripe_checkout_session_id").unique(),
+  stripePaymentIntentId: text("stripe_payment_intent_id").unique(),
   purchaseId: text("purchaseId"),
   amount: integer("amount"),
-  currency: text("currency").default("usd"),
+  currency: text("currency").default("pln"),
   status: text("status").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
