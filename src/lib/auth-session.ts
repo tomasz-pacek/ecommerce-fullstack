@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function getSession() {
   return auth.api.getSession({
@@ -10,7 +11,7 @@ export async function getSession() {
 export async function requireAuth() {
   const session = await getSession();
   if (!session?.user) {
-    throw new Error("Unauthorized");
+    redirect("/register");
   }
   return session;
 }
