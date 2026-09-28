@@ -151,3 +151,80 @@ export async function createCheckoutSession() {
 
   redirect(checkout.url as Route);
 }
+
+export async function createPaymentIntent() {
+  const session = await requireAuth();
+  const userId = session.user.id;
+
+  if (!session?.user?.id) return { error: "Log in" as const };
+
+  const cart = await db
+    .select({
+      laptopId: cartItems.laptopId,
+      quantity: cartItems.quantity,
+      title: laptops.title,
+      priceCents: laptops.priceCents,
+    })
+    .from(cartItems)
+    .leftJoin(laptops, eq(laptops.id, cartItems.laptopId))
+    .where(eq(cartItems.userId, userId));
+
+  if (cart.length === 0) return { error: "Cart is empty" as const };
+
+  for (const item of cart) {
+    if (item.title === null || item.priceCents === null) {
+      throw new Error("One of the products is no longer available");
+    }
+    if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+      throw new Error("Invalid quantity");
+    }
+  }
+
+  const items = cart.map((i) => ({
+    ...i,
+    priceCents: i.priceCents!,
+    title: i.title!,
+  }));
+
+  const total = items.reduce((sum, i) => sum + i.priceCents * i.quantity, 0);
+
+  const purchaseId = crypto.randomUUID();
+
+  await db.transaction(async (tx) => {
+    const [p] = await tx
+      .insert(purchases)
+      .values({
+        id: purchaseId,
+        userId: userId,
+        status: "pending",
+        amount: total,
+        currency: "pln",
+      })
+      .returning();
+
+    await tx.insert(purchaseItems).values(
+      items.map((i) => ({
+        id: crypto.randomUUID(),
+        purchaseId,
+        laptopId: i.laptopId,
+        quantity: i.quantity,
+        unitPriceCents: i.priceCents,
+        titleSnapshot: i.title,
+      })),
+    );
+    return p;
+  });
+  const pi = await stripe.paymentIntents.create({
+    amount: total,
+    currency: "pln",
+    automatic_payment_methods: { enabled: true },
+    metadata: { purchaseId, userId },
+  });
+
+  await db
+    .update(purchases)
+    .set({ stripePaymentIntentId: pi.id })
+    .where(eq(purchases.id, purchaseId));
+
+  return { clientSecret: pi.client_secret! };
+}
