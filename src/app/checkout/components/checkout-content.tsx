@@ -1,31 +1,36 @@
 import { getCart } from "@/actions/cart";
 import CheckoutClient from "./checkout-client";
+import CheckoutSummary from "./checkout-summary";
+import CheckoutForm from "./checkout-form";
+import PayButton from "./pay-button";
+import { redirect } from "next/navigation";
+import { Route } from "next";
 
 export default async function CheckoutContent() {
-  const cart = await getCart();
+  const cartItems = await getCart();
 
-  const total = cart.reduce(
+  if (cartItems.length === 0) {
+    redirect("/cart" as Route);
+  }
+
+  const total = cartItems.reduce(
     (sum, i) => sum + i.laptops.priceCents * i.cart_items.quantity,
     0,
   );
 
   return (
-    <div className="container mx-auto mt-48">
-      <h1>Summary</h1>
-      <ul>
-        {cart.map((i) => (
-          <li key={i.laptops.id}>
-            {i.laptops.title} * {i.cart_items.quantity} ={" "}
-            {((i.laptops.priceCents * i.cart_items.quantity) / 100).toFixed(2)}{" "}
-            zł
-          </li>
-        ))}
-      </ul>
-      <p>
-        <strong>{(total / 100).toFixed(2)} zł</strong>
-      </p>
+    <CheckoutClient amount={total}>
+      <div className="container mx-auto mt-48 flex flex-row justify-center gap-20 px-4">
+        <div className="w-3/5">
+          <CheckoutForm />
+        </div>
 
-      <CheckoutClient amount={total} />
-    </div>
+        <div className="w-2/5">
+          <CheckoutSummary items={cartItems} total={total}>
+            <PayButton total={total} />
+          </CheckoutSummary>
+        </div>
+      </div>
+    </CheckoutClient>
   );
 }
