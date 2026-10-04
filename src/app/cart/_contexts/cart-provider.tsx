@@ -9,6 +9,7 @@ type CartEntry = { cart_items: CartItem; laptops: Laptop };
 
 type CartContextValue = {
   items: CartEntry[];
+  isAuthenticated: boolean;
   isPending: boolean;
   updateQuantity: (laptopId: string, quantity: number) => void;
 };
@@ -17,6 +18,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 type Props = {
   cartItems: CartEntry[];
+  isAuthenticated: boolean;
   children: React.ReactNode;
 };
 
@@ -26,7 +28,11 @@ export const useCart = () => {
   return ctx;
 };
 
-export default function CartProvider({ cartItems, children }: Props) {
+export default function CartProvider({
+  cartItems,
+  isAuthenticated,
+  children,
+}: Props) {
   const [isPending, startTransition] = useTransition();
   const [optimisticItems, setOptimisticItems] = useOptimistic(
     cartItems,
@@ -61,7 +67,12 @@ export default function CartProvider({ cartItems, children }: Props) {
 
   return (
     <CartContext.Provider
-      value={{ items: optimisticItems, isPending, updateQuantity }}
+      value={{
+        items: optimisticItems,
+        isAuthenticated,
+        isPending,
+        updateQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>
