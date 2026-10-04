@@ -9,6 +9,8 @@ export function buildWhere(
 ): SQL | undefined {
   const conditions: SQL[] = [];
 
+  conditions.push(gte(laptops.quantity, 1));
+
   if (filters.processor?.length && excludeKey !== "processor") {
     conditions.push(inArray(laptops.cpuModel, filters.processor));
   }

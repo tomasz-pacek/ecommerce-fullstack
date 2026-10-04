@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, gte } from "drizzle-orm";
 import { db } from ".";
 import { laptops } from "./schema";
 import { cacheLife, cacheTag } from "next/cache";
@@ -31,7 +31,11 @@ export const getLaptops = async () => {
   "use cache";
   cacheTag(`laptops`);
   cacheLife("days");
-  const rows = await db.select().from(laptops).limit(16);
+  const rows = await db
+    .select()
+    .from(laptops)
+    .where(gte(laptops.quantity, 1))
+    .limit(16);
 
   return rows;
 };
