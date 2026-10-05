@@ -1,5 +1,5 @@
 import { Laptop } from "@/db/schema";
-import { formatPrice } from "../utils/format-price";
+import { formatPrice } from "../utils/format-price-";
 import { HeroCarouselItem } from "@/types/hero-carousel-item";
 import { Route } from "next";
 

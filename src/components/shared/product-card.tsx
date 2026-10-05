@@ -3,7 +3,7 @@ import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
 import ActionButton from "./action-button";
 import { ShoppingCartIcon } from "lucide-react";
-import { formatPrice } from "@/lib/utils/format-price";
+import { formatPrice } from "@/lib/utils/format-price-";
 import Link from "next/link";
 
 type Props = {

@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -11,7 +11,11 @@ import {
   integer,
   uniqueIndex,
   numeric,
+  jsonb,
+  pgSequence,
 } from "drizzle-orm/pg-core";
+
+export const laptopSkuSeq = pgSequence("laptop_sku_seq");
 
 export const brandEnum = pgEnum("laptop_brand", [
   "apple",
@@ -22,6 +26,8 @@ export const brandEnum = pgEnum("laptop_brand", [
   "msi",
   "acer",
 ]);
+export const brands = brandEnum.enumValues;
+export type BrandType = (typeof brands)[number];
 
 export const cpuBrandEnum = pgEnum("cpu_brand", ["intel", "amd", "apple"]);
 export const gpuTypeEnum = pgEnum("gpu_type", ["integrated", "dedicated"]);
@@ -40,6 +46,8 @@ export type StorageType = (typeof storageTypes)[number];
 export const operatingSystems = osEnum.enumValues;
 export type OperatingSystemType = (typeof operatingSystems)[number];
 
+export const user_role = pgEnum("user_role", ["user", "admin"]);
+
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -52,6 +60,8 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  role: user_role("role"),
 });
 
 export const session = pgTable(
@@ -117,7 +127,9 @@ export const laptops = pgTable(
   "laptops",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    sku: varchar("sku", { length: 40 }).notNull(),
+    sku: varchar("sku", { length: 40 })
+      .notNull()
+      .default(sql`'LAP-' || LPAD(nextval('laptop_sku_seq')::text, 6, '0')`),
     slug: varchar("slug", { length: 200 }).notNull(),
     brand: brandEnum("brand").notNull(),
     model: varchar("model", { length: 120 }).notNull(),
@@ -136,7 +148,7 @@ export const laptops = pgTable(
     refreshRateHz: integer("refresh_rate_hz"),
 
     cpuBrand: cpuBrandEnum("cpu_brand").notNull(),
-    cpuModel: varchar("cpu_model", { length: 60 }),
+    cpuModel: varchar("cpu_model", { length: 60 }).notNull(),
     gpuType: gpuTypeEnum("gpu_type").notNull(),
     gpuModel: varchar("gpu_model", { length: 60 }),
     storageType: storageTypeEnum("storage_type").notNull(),
@@ -179,9 +191,8 @@ export const cartItems = pgTable(
   "cart_items",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    guestId: text("guest_id"),
     laptopId: uuid("laptop_id")
       .notNull()
       .references(() => laptops.id, { onDelete: "cascade" }),
@@ -194,7 +205,9 @@ export const cartItems = pgTable(
   },
   (t) => [
     uniqueIndex("cart_items_user_laptop_idx").on(t.userId, t.laptopId),
+    uniqueIndex("cart_items_guest_laptop_idx").on(t.guestId, t.laptopId),
     index("cart_items_user_id_idx").on(t.userId),
+    index("cart_items_guest_id_idx").on(t.guestId),
   ],
 );
 
@@ -242,3 +255,55 @@ export const cartItemRelations = relations(cartItems, ({ one }) => ({
 
 export type Laptop = typeof laptops.$inferSelect;
 export type CartItem = typeof cartItems.$inferSelect;
+
+export const purchases = pgTable("purchases", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id),
+
+  stripeCustomerId: text("stripe_customer_id").notNull(),
+  stripeCheckoutSessionId: text("stripe_checkout_session_id")
+    .notNull()
+    .unique(),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+
+  purchaseId: text("purchaseId"),
+  amount: integer("amount"),
+  currency: text("currency").default("usd"),
+  status: text("status").notNull(),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const purchaseItems = pgTable(
+  "purchase_items",
+  {
+    id: text("id").primaryKey(),
+    purchaseId: text("purchase_id")
+      .notNull()
+      .references(() => purchases.id, { onDelete: "cascade" }),
+    laptopId: uuid("laptop_id")
+      .notNull()
+      .references(() => laptops.id),
+    quantity: integer("quantity").notNull(),
+    unitPriceCents: integer("unit_price_cents").notNull(),
+    titleSnapshot: varchar("title_snapshot", { length: 200 }).notNull(),
+  },
+  (t) => [index("purchase_items_purchase_id_idx").on(t.purchaseId)],
+);
+
+export const purchaseItemRelations = relations(purchaseItems, ({ one }) => ({
+  purchase: one(purchases, {
+    fields: [purchaseItems.purchaseId],
+    references: [purchases.id],
+  }),
+  laptop: one(laptops, {
+    fields: [purchaseItems.laptopId],
+    references: [laptops.id],
+  }),
+}));
+
+export const purchaseRelations = relations(purchases, ({ many }) => ({
+  items: many(purchaseItems),
+}));

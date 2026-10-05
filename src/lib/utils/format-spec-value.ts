@@ -1,5 +1,5 @@
 export const formatSpecValue = (value: string | boolean | number | null) => {
-  if (value === null) return "-";
+  if (value === null || value === "") return "-";
   if (typeof value === "boolean") {
     return value ? "Yes" : "No";
   }

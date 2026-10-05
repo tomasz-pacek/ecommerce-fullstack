@@ -16,7 +16,7 @@ type Props = {
 export default async function ProductContent({ params }: Props) {
   const { slug } = await params;
   const laptop = await getLaptopBySlug(slug);
-  if (!laptop) return notFound();
+  if (!laptop || !laptop.isActive) return notFound();
 
   const breadcrumbItems: BreadcrumbItemsType[] = [
     { label: "Home", href: "/" },

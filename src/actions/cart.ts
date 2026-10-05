@@ -23,7 +23,7 @@ export const addToCart = async (laptopId: string, quantity: number = 1) => {
         target: [cartItems.userId, cartItems.laptopId],
         set: { quantity: sql`${cartItems.quantity} + ${quantity}` },
       });
-    // revalidatePath("/", "layout");
+    revalidatePath("/cart");
     return { success: true };
   } catch (error) {
     console.error(error);

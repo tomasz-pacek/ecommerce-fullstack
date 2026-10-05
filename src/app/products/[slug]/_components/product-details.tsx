@@ -2,7 +2,7 @@ import AddToCart from "@/components/shared/add-to-cart";
 import Reveal from "@/components/shared/reveal";
 import { Laptop } from "@/db/schema";
 import { formatGramsToKilos } from "@/lib/utils/format-grams-to-kilos";
-import { formatPrice } from "@/lib/utils/format-price";
+import { formatPrice } from "@/lib/utils/format-price-";
 import { formatSpecValue } from "@/lib/utils/format-spec-value";
 import Test from "./test";
 

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import LoginDropdown from "./login-dropdown";
 import { Session } from "@/types/auth";
-import ThemeToggle from "./theme-toggle";
+import ThemeToggle from "../../components/shared/theme-toggle";
 
 gsap.registerPlugin(ScrollTrigger);
 

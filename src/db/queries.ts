@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from ".";
 import { cartItems, laptops } from "./schema";
 import { cacheLife, cacheTag } from "next/cache";
@@ -25,6 +25,16 @@ export const getHeroLaptops = async () => {
   const heroLaptops = await db.select().from(laptops).limit(3);
 
   return heroLaptops;
+};
+
+export const getLaptopsForAdminPanel = async () => {
+  "use cache";
+  cacheTag("admin-laptops");
+  cacheLife("days");
+
+  const rows = await db.select().from(laptops).orderBy(desc(laptops.updatedAt));
+
+  return rows;
 };
 
 //temp
