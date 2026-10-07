@@ -1,6 +1,6 @@
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
 import { db } from ".";
-import { cartItems, laptops } from "./schema";
+import { account, cartItems, laptops, user } from "./schema";
 import { cacheLife, cacheTag } from "next/cache";
 import { getCurrentSession } from "@/lib/auth-utils";
 
@@ -27,6 +27,7 @@ export const getHeroLaptops = async () => {
   return heroLaptops;
 };
 
+// /admin/catalog/page.tsx
 export const getLaptopsForAdminPanel = async () => {
   "use cache";
   cacheTag("admin-laptops");
@@ -35,6 +36,30 @@ export const getLaptopsForAdminPanel = async () => {
   const rows = await db.select().from(laptops).orderBy(desc(laptops.updatedAt));
 
   return rows;
+};
+
+// /admin/customers/_components/customers-content.tsx
+export const getTotalUsersCount = async () => {
+  "use cache";
+  cacheTag("total-users");
+  cacheLife("hours");
+
+  const [result] = await db.select({ totalUsers: count() }).from(account);
+
+  return result.totalUsers;
+};
+
+export const getTotalVerifiedUsers = async () => {
+  "use cache";
+  cacheTag("total-verified-users");
+  cacheLife("hours");
+
+  const [result] = await db
+    .select({ totalVerifiedUsers: count() })
+    .from(user)
+    .where(eq(user.emailVerified, true));
+
+  return result.totalVerifiedUsers;
 };
 
 //temp
