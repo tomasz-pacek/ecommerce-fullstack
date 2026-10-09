@@ -31,7 +31,7 @@ export const getHeroLaptops = async () => {
 export const getLaptopsForAdminPanel = async () => {
   "use cache";
   cacheTag("admin-laptops");
-  cacheLife("days");
+  cacheLife("hours");
 
   const rows = await db.select().from(laptops).orderBy(desc(laptops.updatedAt));
 
@@ -39,10 +39,21 @@ export const getLaptopsForAdminPanel = async () => {
 };
 
 // /admin/customers/_components/customers-content.tsx
+export const getCustomersForAdminPanel = async () => {
+  "use cache";
+  cacheTag("admin-customers");
+  cacheLife("minutes");
+
+  const rows = await db.select().from(user).orderBy(desc(user.createdAt));
+
+  return rows;
+};
+
+// /admin/customers/_components/customers-stats.tsx
 export const getTotalUsersCount = async () => {
   "use cache";
   cacheTag("total-users");
-  cacheLife("hours");
+  cacheLife("minutes");
 
   const [result] = await db.select({ totalUsers: count() }).from(account);
 
@@ -52,7 +63,7 @@ export const getTotalUsersCount = async () => {
 export const getTotalVerifiedUsers = async () => {
   "use cache";
   cacheTag("total-verified-users");
-  cacheLife("hours");
+  cacheLife("minutes");
 
   const [result] = await db
     .select({ totalVerifiedUsers: count() })

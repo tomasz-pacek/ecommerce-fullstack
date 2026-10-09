@@ -1,26 +1,14 @@
-import { getTotalUsersCount, getTotalVerifiedUsers } from "@/db/queries";
-import CustomersStatCard from "./customers-stat-card";
+import { getCustomersForAdminPanel } from "@/db/queries";
+import { CustomersDataTable } from "./customers-data-table";
+import CustomersStats from "./customers-stats";
+import { customerColumns } from "./customers-columns";
 
 export default async function CustomersContent() {
-  const [totalUsers, totalVerifiedUsers] = await Promise.all([
-    getTotalUsersCount(),
-    getTotalVerifiedUsers(),
-  ]);
+  const customers = await getCustomersForAdminPanel();
   return (
     <div className="xs:px-0 container mx-auto px-4 py-12">
-      <div className="grid w-full grid-cols-2 gap-6">
-        <CustomersStatCard title="Accounts">
-          <p className="text-foreground text-bold text-2xl">{totalUsers}</p>
-        </CustomersStatCard>
-        <CustomersStatCard title="Email verified">
-          <p className="text-foreground text-bold text-2xl">
-            {totalUsers}{" "}
-            <span className="text-muted-foreground">
-              / {totalVerifiedUsers}
-            </span>
-          </p>
-        </CustomersStatCard>
-      </div>
+      <CustomersStats />
+      <CustomersDataTable columns={customerColumns} data={customers} />
     </div>
   );
 }

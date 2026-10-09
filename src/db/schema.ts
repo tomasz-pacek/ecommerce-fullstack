@@ -255,6 +255,7 @@ export const cartItemRelations = relations(cartItems, ({ one }) => ({
 
 export type Laptop = typeof laptops.$inferSelect;
 export type CartItem = typeof cartItems.$inferSelect;
+export type User = typeof user.$inferSelect;
 
 export const purchases = pgTable("purchases", {
   id: text("id").primaryKey(),

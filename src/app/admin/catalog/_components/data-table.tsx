@@ -18,7 +18,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { features, type DataTableFeatures } from "./data-table-features";
+import {
+  features,
+  type DataTableFeatures,
+} from "../../../../components/shared/data-table-features";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ActionButton from "@/components/shared/action-button";

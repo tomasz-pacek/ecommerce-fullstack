@@ -2,7 +2,7 @@
 
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { type DataTableFeatures } from "./data-table-features";
+import { type DataTableFeatures } from "../../../../components/shared/data-table-features";
 import { Laptop } from "@/db/schema";
 import { formatPrice } from "@/lib/utils/format-price-";
 import { formatDistanceToNow } from "date-fns";
